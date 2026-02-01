@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Valentine 💖</title>
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow: hidden;
+  background: linear-gradient(135deg, #ffd6e8, #ffeef5);
+  animation: bgAnim 10s ease-in-out infinite alternate;
+}
+
+@keyframes bgAnim {
+  0% { background: linear-gradient(135deg, #ffd6e8, #ffeef5); }
+  50% { background: linear-gradient(135deg, #ff9a9e, #fad0c4); }
+  100% { background: linear-gradient(135deg, #ffe3ff, #ffb3c1); }
+}
+
+.card {
+  background: white;
+  padding: 40px 30px;
+  border-radius: 30px;
+  box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+  text-align: center;
+  width: 360px;
+  position: relative;
+  z-index: 2;
+  transition: transform 0.5s ease, opacity 0.5s ease;
+}
+
+.card h2 {
+  margin-bottom: 25px;
+  font-size: 24px;
+  color: #ff4d88;
+  text-shadow: 0 0 10px rgba(255,77,136,0.6);
+}
+
+button {
+  padding: 12px 30px;
+  margin: 10px;
+  border: none;
+  border-radius: 30px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+#yes {
+  background: #ff4d88;
+  color: white;
+  box-shadow: 0 5px 20px rgba(255,77,136,0.4);
+}
+
+#yes:hover {
+  transform: scale(1.15) rotate(-2deg);
+}
+
+#no {
+  background: #ddd;
+  position: absolute;
+}
+
+#result {
+  display: none;
+  text-align: center;
+  color: white;
+  font-size: 38px;
+  z-index: 2;
+  animation: fadeIn 1s forwards;
+}
+
+#result p {
+  font-size: 22px;
+  margin-top: 15px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.heart {
+  position: absolute;
+  bottom: -50px;
+  font-size: 20px;
+  animation: floatUp 6s linear forwards;
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+@keyframes floatUp {
+  0% { transform: translateY(0) rotate(0deg); opacity:1; }
+  100% { transform: translateY(-110vh) rotate(360deg); opacity:0; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="card" id="question">
+  <h2>CELYA 👑<br> will you be my Princess?</h2>
+  <button id="yes">Yes 💖</button>
+  <button id="no">No</button>
+</div>
+
+<div id="result">
+  <h1>CELYA said YES 👑💍💖</h1>
+  <p>I’m the luckiest person alive 😍</p>
+</div>
+
+<script>
+const noBtn = document.getElementById("no");
+const card = document.getElementById("question");
+const yesBtn = document.getElementById("yes");
+const result = document.getElementById("result");
+
+// Move NO button
+function moveNo(e) {
+  const rect = card.getBoundingClientRect();
+  const maxX = rect.width - noBtn.offsetWidth;
+  const maxY = rect.height - noBtn.offsetHeight;
+
+  let x = Math.random() * maxX;
+  let y = Math.random() * maxY;
+
+  if (e) {
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    if (Math.abs(x - mouseX) < 60) x = (x + 120) % maxX;
+    if (Math.abs(y - mouseY) < 60) y = (y + 120) % maxY;
+  }
+
+  noBtn.style.left = x + "px";
+  noBtn.style.top = y + "px";
+}
+
+noBtn.addEventListener("mousemove", moveNo);
+noBtn.addEventListener("touchstart", moveNo);
+
+// YES click
+yesBtn.addEventListener("click", () => {
+  card.style.transform = "scale(0) rotate(-30deg)";
+  card.style.opacity = "0";
+  createBurst();
+
+  setTimeout(() => {
+    card.style.display = "none";
+    document.body.style.background = "linear-gradient(135deg, #ff9a9e, #fad0c4)";
+    result.style.display = "block";
+  }, 500);
+});
+
+// Floating hearts
+function createHeart() {
+  const heart = document.createElement("div");
+  heart.className = "heart";
+  heart.innerHTML = "❤️";
+  heart.style.left = Math.random() * 100 + "vw";
+  heart.style.fontSize = Math.random() * 30 + 15 + "px";
+  heart.style.animationDuration = (Math.random() * 3 + 4) + "s";
+  document.body.appendChild(heart);
+  setTimeout(() => heart.remove(), 6000);
+}
+
+setInterval(createHeart, 400);
+
+// Heart burst
+function createBurst() {
+  for (let i = 0; i < 30; i++) {
+    const heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerHTML = "💖";
+    heart.style.left = card.offsetLeft + card.offsetWidth / 2 + "px";
+    heart.style.top = card.offsetTop + card.offsetHeight / 2 + "px";
+    heart.style.fontSize = Math.random() * 20 + 15 + "px";
+    heart.style.transition = "transform 1s ease, opacity 1s ease";
+    document.body.appendChild(heart);
+
+    setTimeout(() => {
+      heart.style.transform = `translate(${Math.random()*300-150}px, ${Math.random()*-300}px)
+        scale(${Math.random()+0.5})
+        rotate(${Math.random()*720-360}deg)`;
+      heart.style.opacity = 0;
+    }, 50);
+
+    setTimeout(() => heart.remove(), 1200);
+  }
+}
+</script>
+
+</body>
+</html>
